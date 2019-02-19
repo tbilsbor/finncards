@@ -423,9 +423,9 @@ def save_verb(verb=None, english=None, forms=None):
 def save_phrase(phrase=None, english=None):
     """Save a phrase to the file"""
     if phrase is None:
-        phrase = input("Phrase (Finnish): ").lower()
+        finnish = input("Phrase (Finnish): ").lower()
     if english is None:
-        phrase = input("English: ").lower()
+        english = input("English: ").lower()
     last_reviewed = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     next_review = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     interval = pd.to_timedelta("1 days")
@@ -434,11 +434,12 @@ def save_phrase(phrase=None, english=None):
     times_incorrect = 0
     stats = [last_reviewed, next_review, interval, correct, times_correct,
              times_incorrect]
-    data = [phrase, english] + stats
+    data = [finnish, english] + stats
     columns = PHRASE_COLUMNS + STATS
     entry = pd.DataFrame(data=[data], columns=columns)
     phrases = load_phrases()
-    phrases = phrases.append(entry, verify_integrity=True)
+    phrases = phrases.append(entry)
+    phrases.reset_index(drop=True, inplace=True)
     conf = input("Adding phrase. Continue? ").lower()
     if conf == 'y':
         phrases.to_csv('phrases.csv')

@@ -1,1 +1,11 @@
 ,Finnish,English,Last reviewed,Next review,Interval,Correct?,Times correct,Times incorrect
+0,minulla on poika,i have a son,2019-02-19 15:21:37.194887,2019-02-21 03:21:37.202597,1 days 12:00:00,True,1,0
+1,veljeni on mielenkiintoinen,my brother is interesting,2019-02-19 16:04:19.989483,2019-02-21 04:04:19.992232,1 days 12:00:00,True,1,0
+2,perheeni on iso,my family is big,2019-02-19 16:03:34.341740,2019-02-21 04:03:34.344042,1 days 12:00:00,True,1,0
+3,hänellä on taso,he has a house,2019-02-19 16:04:31.238501,2019-02-19 15:37:53.132767,1 days 00:00:00,False,0,1
+4,huoneistoni on täydellinen,my apartment is perfect,2019-02-19 16:05:15.400680,2019-02-21 04:05:15.403363,1 days 12:00:00,True,1,0
+5,äitini on aistikas,my mother is elegant,2019-02-19 16:04:53.264949,2019-02-19 15:43:02.242679,1 days 00:00:00,False,0,1
+6,onko sinulla veli?,do you have a brother?,2019-02-19 16:04:25.017978,2019-02-21 04:04:25.020461,1 days 12:00:00,True,1,0
+7,hänellä on auto,she has a car,2019-02-19 16:05:06.401614,2019-02-21 04:05:06.404311,1 days 12:00:00,True,1,0
+8,minulla on isoisä,i have a grandfather,2019-02-19 16:05:01.083558,2019-02-21 04:05:01.086050,1 days 12:00:00,True,1,0
+9,koirani on sievä,my dog is pretty,2019-02-19 16:04:00.889249,2019-02-19 15:48:02.691038,1 days 00:00:00,False,0,1
