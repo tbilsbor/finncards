@@ -278,6 +278,8 @@ def backup_files():
     print(r"Backing up data files to /backups/backup{}".format(timestamp))
     copy('verbs.csv', newpath)
     copy('nominals.csv', newpath)
+    copy('invariants.csv', newpath)
+    copy('phrases.csv', newpath)
     print("Backup completed")
 
 def load_invariants():
