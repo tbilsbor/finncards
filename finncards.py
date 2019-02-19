@@ -13,9 +13,16 @@ import datetime
 from numpy import nan
 import os
 import pandas as pd
+import random
 from shutil import copy
 from bs4 import BeautifulSoup
 from requests_html import HTMLSession
+
+# General settings
+# Multiply the interval for a correct answer by this
+CORRECT_INTERVAL = 1.5
+# Multiply the interval for an incorrect answer by this
+INCORRECT_INTERVAL = 0.8
 
 # Additional columns for nouns
 NOMINAL_COLUMNS = [
@@ -40,10 +47,17 @@ INVARIANT_COLUMNS = [
         "Rection"
         ]
 
+# Columns for phrases
+PHRASE_COLUMNS = [
+        "Finnish",
+        "English"
+        ]
+
 # Statistics
 STATS = [
         "Last reviewed",
         "Next review",
+        "Interval",
         "Correct?",
         "Times correct",
         "Times incorrect"
@@ -241,11 +255,11 @@ VERB_FORMS = {
     "E infinitive instructive": ["Doing:", 4],
     "Negative participle": ["Without:", 4],
     "MA infinitive inessive": ["Ongoing action or process:", 4],
-    "MA infinitive elative": ["From doing this:", 4]
+    "MA infinitive elative": ["From doing this:", 4],
     "MA infinitive illative": ["About to begin", 4],
     "MA infinitive adessive": ["By doing this:", 4],
     "MA infinitive abessive": ["Without doing this: ", 4],
-    "MA infinitive instructive": ["Solemn necessity:" 4],
+    "MA infinitive instructive": ["Solemn necessity:", 4],
     "MA infinitive instructive passive": ["One's solemn necessity:", 1],
     "MINEN infinitive nominative": ["[skip]", nan],
     "MINEN infinitive partitive": ["[skip]", nan],
@@ -268,7 +282,7 @@ def backup_files():
 
 def load_invariants():
     """Loads the invariants file"""
-    invariants = pd.ead_csv('invariants.csv',
+    invariants = pd.read_csv('invariants.csv',
                             index_col='Finnish',
                             parse_dates=['Last reviewed', 'Next review'],
                             infer_datetime_format=True)
@@ -299,14 +313,17 @@ def save_invariant(invariant=None, english=None):
         invariant = input("Invariant (Finnish): ")
     if english is None:
         english = input("English translation of {}: ".format(invariant))
-    last_reviewed = pd.Timestamp(pd.NaT)
+    last_reviewed = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     next_review = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
+    interval = pd.to_timedelta("1 days")
     correct = nan
     times_correct = 0
     times_incorrect = 0
-    stats = [last_reviewed, next_review, correct, times_correct,
+    stats = [last_reviewed, next_review, interval, correct, times_correct,
              times_incorrect]
-    data = [invariant, english] + stats
+    pre_post = input("Pre or post? ").lower()
+    rection = input("Rection: ").lower()
+    data = [invariant, english, pre_post, rection] + stats
     columns = INVARIANT_COLUMNS + STATS
     entry = pd.DataFrame(data=[data], columns=columns)
     entry.set_index(keys="Finnish", inplace=True)
@@ -328,12 +345,13 @@ def save_nominal(nominal=None, english=None, forms=None):
         english = input("English translation of {}: ".format(nominal))
     if forms is None:
         forms = retrieve_nominal(nominal, skip_save=True)
-    last_reviewed = pd.Timestamp(pd.NaT)
+    last_reviewed = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     next_review = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
+    interval = pd.to_timedelta("1 days")
     correct = nan
     times_correct = 0
     times_incorrect = 0
-    stats = [last_reviewed, next_review, correct, times_correct,
+    stats = [last_reviewed, next_review, interval, correct, times_correct,
              times_incorrect]
     data = [nominal, english] + forms + stats
     columns = NOMINAL_COLUMNS + list(NOMINAL_FORMS.keys()) + STATS
@@ -370,12 +388,13 @@ def save_verb(verb=None, english=None, forms=None):
         e_present_part = english[3]
     if forms is None:
         forms = retrieve_verb(verb, skip_save=True)
-    last_reviewed = pd.Timestamp(pd.NaT)
+    last_reviewed = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     next_review = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
+    interval = pd.to_timedelta("1 days")
     correct = nan
     times_correct = 0
     times_incorrect = 0
-    stats = [last_reviewed, next_review, correct, times_correct,
+    stats = [last_reviewed, next_review, interval, correct, times_correct,
              times_incorrect]
     data = [verb, e_present, e_simple_past, e_past_part, 
             e_present_part] + forms + stats
@@ -404,6 +423,10 @@ def retrieve_nominal(nominal, skip_save=False):
         link = span.find('a')
         form = link['title'].split(" ")[0]
         forms.append(form)
+    print(*forms, sep=', ')
+    conf = input("Correct? ").lower()
+    if conf != 'y':
+        return None
     nominals = load_nominals()
     if not skip_save and nominal not in nominals.index:
         conf = input("No entry for {} in file. Add? ".format(nominal)).lower()
@@ -423,15 +446,198 @@ def retrieve_verb(verb, skip_save=False):
     for span in spans:
         # First valid entry will be first person singular 
         # which will always end in an 'n'
-        if span.text[-1] == 'n':
+        if span.text[-1] == 'n' and span.parent.name == 'td':
             adding = True
         if adding:
             forms.append(span.text)
     # There are extraneous entries at the end
     forms = forms[:157]
+    print(*forms, sep=', ')
+    conf = input("Correct? ").lower()
+    if conf != 'y':
+        return None
     verbs = load_verbs()
     if not skip_save and verb not in verbs.index:
         conf = input("No entry for {} in file. Add? ".format(verb)).lower()
         if conf == 'y':
             save_verb(verb, forms=forms)
     return forms
+
+def generate_words_list(load_all=True):
+    """Generate a list of words to review"""
+    invariants = load_invariants()
+    nominals = load_nominals()
+    verbs = load_verbs()
+    now = pd.to_datetime(datetime.datetime.now())
+    invariants_to_review = [[word, 'invariant'] for
+                            word in list(invariants.index) if
+                            now > invariants.loc[word, 'Next review']]
+    nominals_to_review = [[word, 'nominal'] for
+                          word in list(nominals.index) if
+                          now > nominals.loc[word, 'Next review']]
+    verbs_to_review = [[word, 'verb'] for
+                       word in list(verbs.index) if
+                       now > verbs.loc[word, 'Next review']]
+    words = invariants_to_review + nominals_to_review + verbs_to_review
+    if load_all:
+        return words, invariants, nominals, verbs
+    else:
+        return words
+
+def process_correct(word, words_df, cat):
+    """Process a correct answer"""
+    print("Correct")
+    words_df.loc[word, 'Last reviewed'] = pd.to_datetime(datetime
+                  .datetime.now())
+    # Do not increase the interval if the word was previously incorrect
+    if words_df.loc[word, 'Correct?']:
+        words_df.loc[word, 'Interval'] = (pd.to_timedelta(words_df.loc[word, 
+                    'Interval']) * CORRECT_INTERVAL)
+    words_df.loc[word, 'Next review'] = (
+            pd.to_datetime(datetime.datetime.now() + 
+                           words_df.loc[word, 'Interval']))
+    words_df.loc[word, 'Correct?'] = True
+    words_df.loc[word, 'Times correct'] += 1
+    if cat == 'invariant':
+        words_df.to_csv('invariants.csv')
+    elif cat == 'nominal':
+        words_df.to_csv('nominals.csv')
+    elif cat == 'verb':
+        words_df.to_csv('verbs.csv')
+    return True
+
+def process_incorrect(word, words_df, cat):
+    """Process an incorrect answer"""
+    if cat == 'invariant' or cat == 'nominal':
+        print("Incorrect. {} is {}".format(word, words_df.loc[word,
+              'English']))
+    elif cat == 'verb':
+        print("Incorrect. {} is {}".format(word, words_df.loc[word,
+              'English present']))
+    words_df.loc[word, 'Last reviewed'] = pd.to_datetime(datetime
+                  .datetime.now())
+    if (pd.to_timedelta(words_df.loc[word, 'Interval']) > 
+        pd.to_timedelta('1 days')):
+        words_df.loc[word, 'Interval'] = (pd.to_timedelta(words_df.loc[word, 
+                    'Interval']) * INCORRECT_INTERVAL)
+    words_df.loc[word, 'Correct?'] = False
+    words_df.loc[word, 'Times incorrect'] += 1
+    if cat == 'invariant':
+        words_df.to_csv('invariants.csv')
+    elif cat == 'nominal':
+        words_df.to_csv('nominals.csv')
+    elif cat == 'verb':
+        words_df.to_csv('verbs.csv')
+    return True
+        
+def flash_invariant(word, invariants):
+    """Do an invariant flashcard"""
+    english = invariants.loc[word, 'English']
+    print(english)
+    answer = input("Soumeksi: ").lower()
+    if answer == 'q':
+        return False
+    correct = True if answer == word else False
+    if correct:
+        process_correct(word, invariants, cat='invariant')
+    else:
+        process_incorrect(word, invariants, cat='invariant')
+    answer = input("Use in a sentence:\n")
+    if answer == 'q':
+        return False
+    return True
+
+def flash_nominal(word, nominals):
+    """Do a nominal flashcard"""
+    english = nominals.loc[word, 'English']
+    print(english)
+    answer = input("Suomeksi: ").lower()
+    if answer == 'q':
+        return False
+    correct = True if answer == word else False
+    if correct:
+        process_correct(word, nominals, cat='nominal')
+    else:
+        process_incorrect(word, nominals, cat='nominal')
+    form_name = random.choice(list(NOMINAL_FORMS.keys()))
+    form_value = nominals.loc[word, form_name]
+    answer = input("{}: ".format(form_name)).lower()
+    if answer == 'q':
+        return False
+    if answer == form_value:
+        print("Correct")
+    else:
+        print("Incorrect. {} of {} is {}".format(form_name, word, form_value))
+    answer = input("Use in a sentence:\n")
+    if answer == 'q':
+        return False
+    return True
+        
+def flash_verb(word, verbs):
+    """Do a verb flashcard"""
+    english = verbs.loc[word, 'English present']
+    print("To {}".format(english))
+    answer = input("Soumeksi: ").lower()
+    if answer == 'q':
+        return False
+    correct = True if answer == word else False
+    if correct:
+        process_correct(word, verbs, cat='verb')
+    else:
+        process_incorrect(word, verbs, cat='verb')
+    form_name = random.choice(list(VERB_FORMS.keys()))
+    form_value = verbs.loc[word, form_name]
+    if VERB_FORMS[form_name][1] == 0:
+        verb_phrase_subjects = VERB_FORMS[form_name][0].split(" / ")
+        english_verb_phrase = "{} - \"{} {} / {} {}\"".format(form_name,
+                               verb_phrase_subjects[0],
+                               verbs.loc[word, 'English present'],
+                               verb_phrase_subjects[1],
+                               verbs.loc[word, 'English present participle'])
+    elif VERB_FORMS[form_name][1] == 1:
+        english_verb_phrase = "{} - \"{} {}\"".format(form_name,
+                               VERB_FORMS[form_name][0],
+                               verbs.loc[word, 'English present'])
+    elif VERB_FORMS[form_name][1] == 2:
+        english_verb_phrase = "{} - \"{} {}\"".format(form_name,
+                               VERB_FORMS[form_name][0],
+                               verbs.loc[word, 'English simple past'])
+    elif VERB_FORMS[form_name][1] == 3:
+        english_verb_phrase = "{} - \"{} {}\"".format(form_name,
+                               VERB_FORMS[form_name][0],
+                               verbs.loc[word, 'English past participle'])
+    elif VERB_FORMS[form_name][1] == 4:
+        english_verb_phrase = "{} - \"{} {}\"".format(form_name,
+                               VERB_FORMS[form_name][0],
+                               verbs.loc[word, 'English present participle'])
+    answer = input("{}: ".format(english_verb_phrase)).lower()
+    if answer == 'q':
+        return False
+    if answer == form_value:
+        print("Correct")
+    else:
+        print("Incorect. {} of {} is {}".format(form_name, word,
+              form_value))
+    answer = input("Use in a sentence:\n")
+    if answer == 'q':
+        return False
+    return True
+
+def flashcards():
+    """The core flashcards function"""
+    words, invariants, nominals, verbs = generate_words_list()
+    random.shuffle(words)
+    for word in words:
+        if word[1] == 'invariant':
+            if not flash_invariant(word[0], invariants):
+                print("Quitting")
+                return None
+        elif word[1] == 'nominal':
+            if not flash_nominal(word[0], nominals):
+                print("Quitting")
+                return None
+        elif word[1] == 'verb':
+            if not flash_verb(word[0], verbs):
+                print("Quitting")
+                return None
+    print("No more flashcards")

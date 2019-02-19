@@ -1,1 +1,4 @@
-Finnish,English,Pre / Post,Rection,Last reviewed,Next review,Correct?,Times correct,Times incorrect
+Finnish,English,Pre / Post,Rection,Last reviewed,Next review,Interval,Correct?,Times correct,Times incorrect
+eräs,"certain, some, someone, one",,,2019-02-19 14:16:37.651026,2019-02-21 02:16:37.659380,1 days 12:00:00,True,1,0
+kerran,once,,,2019-02-19 14:07:33.053095,2019-02-21 02:07:33.062496,1 days 12:00:00,True,1,0
+näin,so,,,2019-02-19 14:09:31.121229,2019-02-21 02:09:31.123201,1 days 12:00:00,True,1,0
