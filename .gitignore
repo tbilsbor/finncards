@@ -1,6 +1,7 @@
 # Project specific
 backups/
 .DS_Store
+testing*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
