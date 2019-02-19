@@ -24,7 +24,7 @@ CORRECT_INTERVAL = 1.5
 # Multiply the interval for an incorrect answer by this
 INCORRECT_INTERVAL = 0.8
 
-# Additional columns for nouns
+# Additional columns for nominals
 NOMINAL_COLUMNS = [
         "Nominative singular",
         "English"
@@ -277,7 +277,7 @@ def backup_files():
         os.makedirs(newpath)
     print(r"Backing up data files to /backups/backup{}".format(timestamp))
     copy('verbs.csv', newpath)
-    copy('nouns.csv', newpath)
+    copy('nominals.csv', newpath)
     print("Backup completed")
 
 def load_invariants():
@@ -290,22 +290,31 @@ def load_invariants():
     return invariants
 
 def load_nominals():
-    """Load the nouns file"""
-    nouns = pd.read_csv('nominals.csv',
+    """Load the nominals file"""
+    nominals = pd.read_csv('nominals.csv',
                         index_col="Nominative singular",
                         parse_dates=["Last reviewed", "Next review"],
                         infer_datetime_format=True)
-    nouns.sort_index(inplace=True)
-    return nouns
+    nominals.sort_index(inplace=True)
+    return nominals
 
 def load_verbs():
     """Loads the verbs file"""
-    verbs= pd.read_csv('verbs.csv',
+    verbs = pd.read_csv('verbs.csv',
                         index_col="Infinitive",
                         parse_dates=["Last reviewed", "Next review"],
                         infer_datetime_format=True)
     verbs.sort_index(inplace=True)
     return verbs
+
+def load_phrases():
+    """Loads the phrases file"""
+    phrases = pd.read_csv('phrases.csv', 
+                          index_col=0,
+                          parse_dates=["Last reviewed", "Next review"],
+                          infer_datetime_format=True)
+    phrases.sort_index(inplace=True)
+    return phrases
 
 def save_invariant(invariant=None, english=None):
     """Save an invariant and at it to the file"""
@@ -316,7 +325,7 @@ def save_invariant(invariant=None, english=None):
     last_reviewed = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     next_review = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     interval = pd.to_timedelta("1 days")
-    correct = nan
+    correct = True
     times_correct = 0
     times_incorrect = 0
     stats = [last_reviewed, next_review, interval, correct, times_correct,
@@ -348,7 +357,7 @@ def save_nominal(nominal=None, english=None, forms=None):
     last_reviewed = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     next_review = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     interval = pd.to_timedelta("1 days")
-    correct = nan
+    correct = True
     times_correct = 0
     times_incorrect = 0
     stats = [last_reviewed, next_review, interval, correct, times_correct,
@@ -357,11 +366,11 @@ def save_nominal(nominal=None, english=None, forms=None):
     columns = NOMINAL_COLUMNS + list(NOMINAL_FORMS.keys()) + STATS
     entry = pd.DataFrame(data=[data], columns=columns)
     entry.set_index(keys="Nominative singular", inplace=True)
-    nouns = load_nominals()
-    nouns = nouns.append(entry, verify_integrity=True)
+    nominals = load_nominals()
+    nominals = nominals.append(entry, verify_integrity=True)
     conf = input("Adding {}. Continue? ".format(nominal)).lower()
     if conf == 'y':
-        nouns.to_csv('nouns.csv')
+        nominals.to_csv('nominals.csv')
         print("File saved")
         return True
     else:
@@ -391,7 +400,7 @@ def save_verb(verb=None, english=None, forms=None):
     last_reviewed = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     next_review = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     interval = pd.to_timedelta("1 days")
-    correct = nan
+    correct = True
     times_correct = 0
     times_incorrect = 0
     stats = [last_reviewed, next_review, interval, correct, times_correct,
@@ -406,6 +415,33 @@ def save_verb(verb=None, english=None, forms=None):
     conf = input("Adding {}. Continue? ".format(verb)).lower()
     if conf == 'y':
         verbs.to_csv('verbs.csv')
+        print("File saved")
+        return True
+    else:
+        return None
+    
+def save_phrase(phrase=None, english=None):
+    """Save a phrase to the file"""
+    if phrase is None:
+        phrase = input("Phrase (Finnish): ").lower()
+    if english is None:
+        phrase = input("English: ").lower()
+    last_reviewed = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
+    next_review = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
+    interval = pd.to_timedelta("1 days")
+    correct = True
+    times_correct = 0
+    times_incorrect = 0
+    stats = [last_reviewed, next_review, interval, correct, times_correct,
+             times_incorrect]
+    data = [phrase, english] + stats
+    columns = PHRASE_COLUMNS + STATS
+    entry = pd.DataFrame(data=[data], columns=columns)
+    phrases = load_phrases()
+    phrases = phrases.append(entry, verify_integrity=True)
+    conf = input("Adding phrase. Continue? ").lower()
+    if conf == 'y':
+        phrases.to_csv('phrases.csv')
         print("File saved")
         return True
     else:
@@ -483,6 +519,14 @@ def generate_words_list(load_all=True):
         return words, invariants, nominals, verbs
     else:
         return words
+    
+def generate_phrases_list():
+    """Generate a list of phrases to review"""
+    phrases = load_phrases()
+    now = pd.to_datetime(datetime.datetime.now())
+    phrases_to_review = [phrase_i for phrase_i in list(phrases.index) if
+                            now > phrases.loc[phrase_i, 'Next review']]
+    return phrases_to_review
 
 def process_correct(word, words_df, cat):
     """Process a correct answer"""
@@ -504,6 +548,8 @@ def process_correct(word, words_df, cat):
         words_df.to_csv('nominals.csv')
     elif cat == 'verb':
         words_df.to_csv('verbs.csv')
+    elif cat == 'phrase':
+        words_df.to_csv('phrases.csv')
     return True
 
 def process_incorrect(word, words_df, cat):
@@ -514,6 +560,9 @@ def process_incorrect(word, words_df, cat):
     elif cat == 'verb':
         print("Incorrect. {} is {}".format(word, words_df.loc[word,
               'English present']))
+    elif cat == 'phrase':
+        print("Incorrect. {}\nis\n{}".format(words_df.loc[word, 'English'],
+              words_df.loc[word, 'Finnish']))
     words_df.loc[word, 'Last reviewed'] = pd.to_datetime(datetime
                   .datetime.now())
     if (pd.to_timedelta(words_df.loc[word, 'Interval']) > 
@@ -528,6 +577,8 @@ def process_incorrect(word, words_df, cat):
         words_df.to_csv('nominals.csv')
     elif cat == 'verb':
         words_df.to_csv('verbs.csv')
+    elif cat == 'phrase':
+        words_df.to_csv('phrases.csv')
     return True
         
 def flash_invariant(word, invariants):
@@ -623,6 +674,19 @@ def flash_verb(word, verbs):
         return False
     return True
 
+def flash_phrase(phrase_i, phrases):
+    """Do a phrase flashcard"""
+    english = phrases.loc[phrase_i, 'English']
+    print(english)
+    answer = input("Soumeksi: ").lower()
+    if answer == 'q':
+        return False
+    if answer == phrases.loc[phrase_i, 'Finnish']:
+        process_correct(phrase_i, phrases, cat='phrase')
+    else:
+        process_incorrect(phrase_i, phrases, cat='phrase')
+    return True
+
 def flashcards():
     """The core flashcards function"""
     words, invariants, nominals, verbs = generate_words_list()
@@ -640,4 +704,15 @@ def flashcards():
             if not flash_verb(word[0], verbs):
                 print("Quitting")
                 return None
+    print("No more flashcards")
+    
+def phrasecards():
+    """Flashcards for phrases"""
+    phrase_indices = generate_phrases_list()
+    phrases = load_phrases()
+    random.shuffle(phrase_indices)
+    for phrase_i in phrase_indices:
+        if not flash_phrase(phrase_i, phrases):
+            print("Quitting")
+            return None
     print("No more flashcards")
