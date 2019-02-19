@@ -7,18 +7,6 @@ Created on Sat Feb 16 12:26:19 2019
 
 Finnish flashcards application with spaced repetition and retrieval of word
 forms from the internet
-
-TODO
--Change all instances of "noun" to "nominal"
--Invariants
--Make the verb forms dictionary values into lists where the second element
-is the associated English form
--File of words paired with their form (nominal, verb, invariant)
--Metrics for managing review (increase time if right, decrease if wrong...)
--What to do if data is missing or if webpage doesn't exist
--Flashcards function
--Lists of rules on how to form forms when you can't remember
--Look at flashcards delux and see what else you can add
 """
 
 import datetime
@@ -30,7 +18,7 @@ from bs4 import BeautifulSoup
 from requests_html import HTMLSession
 
 # Additional columns for nouns
-NOUN_COLUMNS = [
+NOMINAL_COLUMNS = [
         "Nominative singular",
         "English"
         ]
@@ -44,6 +32,14 @@ VERB_COLUMNS = [
         "English present participle"
         ]
 
+# Columns for invariants
+INVARIANT_COLUMNS = [
+        "Finnish",
+        "English",
+        "Pre / Post",
+        "Rection"
+        ]
+
 # Statistics
 STATS = [
         "Last reviewed",
@@ -55,7 +51,7 @@ STATS = [
 
 # Keys: Finnish noun forms
 # Values: The HTML tags used to retrieve them
-NOUN_FORMS = {
+NOMINAL_FORMS = {
     "Nominative plural": "form-of plural-nominative-form-of lang-fi",
     "Partitive singular": "form-of singular-partitive-form-of lang-fi",
     "Partitive plural": "form-of plural-partitive-form-of lang-fi",
@@ -259,10 +255,19 @@ def backup_files():
     copy('verbs.csv', newpath)
     copy('nouns.csv', newpath)
     print("Backup completed")
-    
-def load_nouns():
+
+def load_invariants():
+    """Loads the invariants file"""
+    invariants = pd.ead_csv('invariants.csv',
+                            index_col='Finnish',
+                            parse_dates=['Last reviewed', 'Next review'],
+                            infer_datetime_format=True)
+    invariants.sort_index(inplace=True)
+    return invariants
+
+def load_nominals():
     """Load the nouns file"""
-    nouns = pd.read_csv('nouns.csv',
+    nouns = pd.read_csv('nominals.csv',
                         index_col="Nominative singular",
                         parse_dates=["Last reviewed", "Next review"],
                         infer_datetime_format=True)
@@ -277,15 +282,13 @@ def load_verbs():
                         infer_datetime_format=True)
     verbs.sort_index(inplace=True)
     return verbs
-    
-def save_noun(noun=None, english=None, forms=None):
-    """Save a noun and its forms to the file"""
-    if noun is None:
-        noun = input("Noun (Finnish): ")
+
+def save_invariant(invariant=None, english=None):
+    """Save an invariant and at it to the file"""
+    if invariant is None:
+        invariant = input("Invariant (Finnish): ")
     if english is None:
-        english = input("English translation of {}: ".format(noun))
-    if forms is None:
-        forms = retrieve_noun(noun, skip_save=True)
+        english = input("English translation of {}: ".format(invariant))
     last_reviewed = pd.Timestamp(pd.NaT)
     next_review = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     correct = nan
@@ -293,13 +296,42 @@ def save_noun(noun=None, english=None, forms=None):
     times_incorrect = 0
     stats = [last_reviewed, next_review, correct, times_correct,
              times_incorrect]
-    data = [noun, english] + forms + stats
-    columns = NOUN_COLUMNS + list(NOUN_FORMS.keys()) + STATS
+    data = [invariant, english] + stats
+    columns = INVARIANT_COLUMNS + STATS
+    entry = pd.DataFrame(data=[data], columns=columns)
+    entry.set_index(keys="Finnish", inplace=True)
+    invariants = load_invariants()
+    invariants = invariants.append(entry, verify_integrity=True)
+    conf = input("Adding {}. Continue? ".format(invariant)).lower()
+    if conf == 'y':
+        invariants.to_csv('invariants.csv')
+        print("File saved")
+        return True
+    else:
+        return None
+    
+def save_nominal(nominal=None, english=None, forms=None):
+    """Save a nominal and its forms to the file"""
+    if nominal is None:
+        nominal = input("Nominal (Finnish): ")
+    if english is None:
+        english = input("English translation of {}: ".format(nominal))
+    if forms is None:
+        forms = retrieve_nominal(nominal, skip_save=True)
+    last_reviewed = pd.Timestamp(pd.NaT)
+    next_review = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
+    correct = nan
+    times_correct = 0
+    times_incorrect = 0
+    stats = [last_reviewed, next_review, correct, times_correct,
+             times_incorrect]
+    data = [nominal, english] + forms + stats
+    columns = NOMINAL_COLUMNS + list(NOMINAL_FORMS.keys()) + STATS
     entry = pd.DataFrame(data=[data], columns=columns)
     entry.set_index(keys="Nominative singular", inplace=True)
-    nouns = load_nouns()
+    nouns = load_nominals()
     nouns = nouns.append(entry, verify_integrity=True)
-    conf = input("Adding {}. Continue? ".format(noun)).lower()
+    conf = input("Adding {}. Continue? ".format(nominal)).lower()
     if conf == 'y':
         nouns.to_csv('nouns.csv')
         print("File saved")
@@ -350,23 +382,23 @@ def save_verb(verb=None, english=None, forms=None):
     else:
         return None
     
-def retrieve_noun(noun, skip_save=False):
+def retrieve_nominal(nominal, skip_save=False):
     """Get a noun's forms from wiktionary"""
     session = HTMLSession()
-    link_string = "https://en.wiktionary.org/wiki/{}".format(noun)
+    link_string = "https://en.wiktionary.org/wiki/{}".format(nominal)
     r = session.get(link_string)
     soup = BeautifulSoup(r.text, 'html.parser')
     forms = []
-    for key, value in NOUN_FORMS.items():
+    for key, value in NOMINAL_FORMS.items():
         span = soup.find(class_=value)
         link = span.find('a')
         form = link['title'].split(" ")[0]
         forms.append(form)
-    nouns = load_nouns()
-    if not skip_save and noun not in nouns.index:
-        conf = input("No entry for {} in file. Add? ".format(noun)).lower()
+    nominals = load_nominals()
+    if not skip_save and nominal not in nominals.index:
+        conf = input("No entry for {} in file. Add? ".format(nominal)).lower()
         if conf == 'y':
-            save_noun(noun, forms=forms)
+            save_nominal(nominal, forms=forms)
     return forms
 
 def retrieve_verb(verb, skip_save=False):
