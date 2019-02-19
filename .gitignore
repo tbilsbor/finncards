@@ -1,5 +1,5 @@
 # Project specific
-backup/
+backups/
 .DS_Store
 
 # Byte-compiled / optimized / DLL files
