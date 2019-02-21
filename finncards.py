@@ -738,6 +738,20 @@ def flash_nominal(word, nominals):
     if answer == 'q':
         return False
     return True
+
+def tps_conjugation(english):
+    """Conjugates an English verb in the 3rd person singular"""
+    es_list_last_one = ['o', 's', 'x']
+    es_list_last_two = ['ch', 'sh']
+    vowels = "aeiou"
+    if english[-1] in es_list_last_one or english[-2:] in es_list_last_two:
+        english += 'es'
+        return english
+    if english[-2] not in vowels and english[-1] == 'y':
+        english = english[:-1] + 'ies'
+        return english
+    english += 's'
+    return english
         
 def flash_verb(word, verbs):
     """Do a verb flashcard"""
@@ -755,11 +769,21 @@ def flash_verb(word, verbs):
                     VERB_FORMS[form] != "[skip]"]
     form_name = random.choice(form_choices)
     form_value = verbs.loc[word, form_name]
+    # English form key:
+    # 0: Simple present / present participle
+    # 1: Simple present only
+    # 2: Simple past
+    # 3: Past participle
+    # 4: Present participle only
     if VERB_FORMS[form_name][1] == 0:
         verb_phrase_subjects = VERB_FORMS[form_name][0].split(" / ")
+        if form_name == 'Third person':
+            conjugation = tps_conjugation(verbs.loc[word, 'English present'])
+        else:
+            conjugation = verbs.loc[word, 'English present']
         english_verb_phrase = "{} - \"{} {} / {} {}\"".format(form_name,
                                verb_phrase_subjects[0],
-                               verbs.loc[word, 'English present'],
+                               conjugation,
                                verb_phrase_subjects[1],
                                verbs.loc[word, 'English present participle'])
     elif VERB_FORMS[form_name][1] == 1:
@@ -807,6 +831,7 @@ def flash_phrase(phrase_i, phrases):
 def flashcards():
     """The core flashcards function"""
     words, invariants, nominals, verbs = generate_words_list()
+    print("{} words due".format(len(words)))
     random.shuffle(words)
     for word in words:
         if word[1] == 'invariant':
