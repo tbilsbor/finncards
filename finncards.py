@@ -20,9 +20,15 @@ from requests_html import HTMLSession
 
 # General settings
 # Multiply the interval for a correct answer by this
-CORRECT_INTERVAL = 1.5
+CORRECT_INTERVAL = 1.4
 # Multiply the interval for an incorrect answer by this
-INCORRECT_INTERVAL = 0.8
+INCORRECT_INTERVAL = 0.5
+# Lowest possible interval
+MINIMUM_INTERVAL = pd.to_timedelta('1 days 00:00:00')
+# Highest possible interval
+MAXIMUM_INTERVAL = pd.to_timedelta('365 days 00:00:00')
+# Highest interval after getting something wrong
+MAX_AFTER_WRONG = pd.to_timedelta('6 days 00:00:00')
 
 # Additional columns for nominals
 NOMINAL_COLUMNS = [
@@ -449,19 +455,28 @@ def save_phrase(phrase=None, english=None):
         return True
     else:
         return None
-    
+
 def retrieve_nominal(nominal, skip_save=False):
     """Get a noun's forms from wiktionary"""
     session = HTMLSession()
     link_string = "https://en.wiktionary.org/wiki/{}".format(nominal)
-    r = session.get(link_string)
+    try:
+        r = session.get(link_string)
+    except Exception as ex:
+        print("There was a problem getting the web page: {}".format(ex))
+        return None
     soup = BeautifulSoup(r.text, 'html.parser')
     forms = []
     for key, value in NOMINAL_FORMS.items():
-        span = soup.find(class_=value)
-        link = span.find('a')
-        form = link['title'].split(" ")[0]
-        forms.append(form)
+        try:
+            span = soup.find(class_=value)
+            link = span.find('a')
+            form = link['title'].split(" ")[0]
+            forms.append(form)
+        except Exception as ex:
+            print("There was a problem finding {}: {}".format(key, ex))
+            forms.append("")
+            continue
     print(*forms, sep=', ')
     conf = input("Correct? ").lower()
     if conf != 'y':
@@ -477,7 +492,11 @@ def retrieve_verb(verb, skip_save=False):
     """Get a verb's forms from wiktionary"""
     session = HTMLSession()
     link_string = "https://en.wiktionary.org/wiki/{}".format(verb)
-    r = session.get(link_string)
+    try:
+        r = session.get(link_string)
+    except Exception as ex:
+        print("There was a problem getting the web page: {}".format(ex))
+        return None
     soup = BeautifulSoup(r.text, 'html.parser')
     spans=soup.find_all(lang='fi')
     adding = False
@@ -501,6 +520,64 @@ def retrieve_verb(verb, skip_save=False):
         if conf == 'y':
             save_verb(verb, forms=forms)
     return forms
+
+def edit_word(word=None, cat=None):
+    """Edit an word entry"""
+    if word is None:
+        word = input("Word (Finnish): ").lower()
+    if cat is None:
+        cat = ""
+        while cat not in ['invariant', 'nominal', 'verb']:
+            cat = input("Category: ").lower()
+    if cat == 'invariant':
+        words = load_invariants()
+        save_string = 'invariants.csv'
+    elif cat == 'nominal':
+        words = load_nominals()
+        save_string = 'nominals.csv'
+    elif cat == 'verb':
+        words = load_verbs()
+        save_string = 'verbs.csv'
+    if word not in words.index():
+        print("No entry for {}".format(word))
+        return None
+    current_english = words.loc[word, 'english']
+    print("{}: {}".format(word, current_english))
+    new_english = input("New value: ").lower()
+    print("{}: {}".format(word, new_english))
+    conf = input("Update entry?: ").lower()
+    if conf == 'y':
+        words.loc[word, 'english'] = new_english
+        words.to_csv(save_string)
+        print("File saved")
+        return True
+
+def edit_phrase(search=None, cat=None):
+    """Edit a phrase entry"""
+    if search is None:
+        search = input("Search (English): ").lower()
+    phrases = load_phrases()
+    english_list = list(phrases['English'])
+    matches = []
+    for english in english_list:
+        if search in english:
+            matches.append(english)
+            finnish = list(phrases[phrases['English'] == 
+                                   english]['Finnish'])[0]
+            print("{}. {}: {}".format(len(matches), english, finnish))
+    selection = -1
+    while selection not in range(1, len(matches)+1):
+        selection = int(input("Selection: "))
+    english = matches[selection-1]
+    new_finnish = input("New Finnish: ").lower()
+    index = phrases[phrases['English'] == english].index.values[0]
+    print("{}: {}".format(english, new_finnish))
+    conf = input("Update entry?: ").lower()
+    if conf == 'y':
+        phrases.loc[index, 'Finnish'] = new_finnish
+        phrases.to_csv('phrases.csv')
+        print("File saved")
+        return True
 
 def generate_words_list(load_all=True):
     """Generate a list of words to review"""
@@ -540,9 +617,12 @@ def process_correct(word, words_df, cat):
     if words_df.loc[word, 'Correct?']:
         words_df.loc[word, 'Interval'] = (pd.to_timedelta(words_df.loc[word, 
                     'Interval']) * CORRECT_INTERVAL)
+        # Make sure the interval doesn't exceed the max
+        if pd.to_timedelta(words_df.loc[word, 'Interval']) > MAXIMUM_INTERVAL:
+            words_df.loc[word, 'Interval'] = MAXIMUM_INTERVAL
     words_df.loc[word, 'Next review'] = (
             pd.to_datetime(datetime.datetime.now() + 
-                           words_df.loc[word, 'Interval']))
+                           pd.to_timedelta(words_df.loc[word, 'Interval'])))
     words_df.loc[word, 'Correct?'] = True
     words_df.loc[word, 'Times correct'] += 1
     if cat == 'invariant':
@@ -558,11 +638,11 @@ def process_correct(word, words_df, cat):
 def process_incorrect(word, words_df, cat):
     """Process an incorrect answer"""
     if cat == 'invariant' or cat == 'nominal':
-        print("Incorrect. {} is {}".format(word, words_df.loc[word,
-              'English']))
+        print("Incorrect. {} is {}".format(words_df.loc[word,
+              'English'], word))
     elif cat == 'verb':
-        print("Incorrect. {} is {}".format(word, words_df.loc[word,
-              'English present']))
+        print("Incorrect. {} is {}".format(words_df.loc[word,
+              'English present'], word))
     elif cat == 'phrase':
         print("Incorrect. {}\nis\n{}".format(words_df.loc[word, 'English'],
               words_df.loc[word, 'Finnish']))
@@ -572,6 +652,12 @@ def process_incorrect(word, words_df, cat):
         pd.to_timedelta('1 days')):
         words_df.loc[word, 'Interval'] = (pd.to_timedelta(words_df.loc[word, 
                     'Interval']) * INCORRECT_INTERVAL)
+        # Make sure interval is not less than the minimum
+        if pd.to_timedelta(words_df.loc[word, 'Interval']) < MINIMUM_INTERVAL:
+            words_df.loc[word, 'Interval'] = MINIMUM_INTERVAL
+        # Make sure interval is not greater than the maximum after wrong
+        if pd.to_timedelta(words_df.loc[word, 'Interval']) > MAX_AFTER_WRONG:
+            words_df.loc[word, 'Interval'] = MAX_AFTER_WRONG
     words_df.loc[word, 'Correct?'] = False
     words_df.loc[word, 'Times incorrect'] += 1
     if cat == 'invariant':

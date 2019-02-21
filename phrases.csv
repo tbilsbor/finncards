@@ -1,11 +1,11 @@
 ,Finnish,English,Last reviewed,Next review,Interval,Correct?,Times correct,Times incorrect
-0,minulla on poika,i have a son,2019-02-19 15:21:37.194887,2019-02-21 03:21:37.202597,1 days 12:00:00,True,1,0
-1,veljeni on mielenkiintoinen,my brother is interesting,2019-02-19 16:04:19.989483,2019-02-21 04:04:19.992232,1 days 12:00:00,True,1,0
-2,perheeni on iso,my family is big,2019-02-19 16:03:34.341740,2019-02-21 04:03:34.344042,1 days 12:00:00,True,1,0
-3,hänellä on taso,he has a house,2019-02-19 16:04:31.238501,2019-02-19 15:37:53.132767,1 days 00:00:00,False,0,1
-4,huoneistoni on täydellinen,my apartment is perfect,2019-02-19 16:05:15.400680,2019-02-21 04:05:15.403363,1 days 12:00:00,True,1,0
-5,äitini on aistikas,my mother is elegant,2019-02-19 16:04:53.264949,2019-02-19 15:43:02.242679,1 days 00:00:00,False,0,1
-6,onko sinulla veli?,do you have a brother?,2019-02-19 16:04:25.017978,2019-02-21 04:04:25.020461,1 days 12:00:00,True,1,0
-7,hänellä on auto,she has a car,2019-02-19 16:05:06.401614,2019-02-21 04:05:06.404311,1 days 12:00:00,True,1,0
-8,minulla on isoisä,i have a grandfather,2019-02-19 16:05:01.083558,2019-02-21 04:05:01.086050,1 days 12:00:00,True,1,0
-9,koirani on sievä,my dog is pretty,2019-02-19 16:04:00.889249,2019-02-19 15:48:02.691038,1 days 00:00:00,False,0,1
+0,minulla on poika,i have a son,2019-02-21 08:25:59.963153,2019-02-23 10:49:59.966177,2 days 02:24:00,True,2,0
+1,veljeni on mielenkiintoinen,my brother is interesting,2019-02-21 08:26:27.488764,2019-02-23 10:50:27.491633,2 days 02:24:00,True,2,0
+2,perheeni on iso,my family is big,2019-02-21 08:25:55.712389,2019-02-23 10:49:55.717834,2 days 02:24:00,True,2,0
+3,hänellä on talo,he has a house,2019-02-21 08:26:10.424425,2019-02-22 08:26:10.425731,1 days 00:00:00,True,1,2
+4,huoneistoni on täydellinen,my apartment is perfect,2019-02-21 08:26:35.711324,2019-02-23 10:50:35.713958,2 days 02:24:00,True,2,0
+5,äitini on aistikas,my mother is elegant,2019-02-20 15:32:29.858277,2019-02-21 15:32:29.859859,1 days 00:00:00,True,1,1
+6,onko sinulla veli?,do you have a brother?,2019-02-21 08:26:16.734927,2019-02-23 10:50:16.737481,2 days 02:24:00,True,2,0
+7,hänellä on auto,she has a car,2019-02-21 08:26:21.785553,2019-02-23 10:50:21.788422,2 days 02:24:00,True,2,0
+8,minulla on isoisä,i have a grandfather,2019-02-21 08:26:05.238955,2019-02-23 10:50:05.241919,2 days 02:24:00,True,2,0
+9,koirani on sievä,my dog is pretty,2019-02-20 15:32:22.153291,2019-02-21 15:32:22.155160,1 days 00:00:00,True,1,1
