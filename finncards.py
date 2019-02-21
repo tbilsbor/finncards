@@ -521,6 +521,23 @@ def retrieve_verb(verb, skip_save=False):
             save_verb(verb, forms=forms)
     return forms
 
+def add_words():
+    """Looping function for adding words"""
+    running = True
+    while running:
+        word = input("Word: ").lower()
+        if word == 'q':
+            return None
+        cat = ""
+        while cat not in ['invariant', 'nominal', 'verb']:
+            cat = input("Category: ").lower()
+        if cat == 'invariant':
+            save_invariant(invariant=word)
+        elif cat == 'nominal':
+            save_nominal(nominal=word)
+        elif cat == 'verb':
+            save_verb(verb=word)
+
 def edit_word(word=None, cat=None):
     """Edit an word entry"""
     if word is None:
