@@ -725,7 +725,9 @@ def flash_verb(word, verbs):
         process_correct(word, verbs, cat='verb')
     else:
         process_incorrect(word, verbs, cat='verb')
-    form_name = random.choice(list(VERB_FORMS.keys()))
+    form_choices = [form for form in VERB_FORMS.keys() if 
+                    VERB_FORMS[form] != "[skip]"]
+    form_name = random.choice(form_choices)
     form_value = verbs.loc[word, form_name]
     if VERB_FORMS[form_name][1] == 0:
         verb_phrase_subjects = VERB_FORMS[form_name][0].split(" / ")
