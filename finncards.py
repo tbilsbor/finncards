@@ -538,6 +538,15 @@ def add_words():
         elif cat == 'verb':
             save_verb(verb=word)
 
+def add_phrases():
+    """Looping function for adding phrases"""
+    running = True
+    while running:
+        phrase = input("Phrase (English): ").lower()
+        if phrase == 'q':
+            return None
+        save_phrase(english=phrase)
+
 def edit_word(word=None, cat=None):
     """Edit an word entry"""
     if word is None:
