@@ -478,9 +478,6 @@ def retrieve_nominal(nominal, skip_save=False):
             forms.append("")
             continue
     print(*forms, sep=', ')
-    conf = input("Correct? ").lower()
-    if conf != 'y':
-        return None
     nominals = load_nominals()
     if not skip_save and nominal not in nominals.index:
         conf = input("No entry for {} in file. Add? ".format(nominal)).lower()
@@ -511,9 +508,6 @@ def retrieve_verb(verb, skip_save=False):
     # There are extraneous entries at the end
     forms = forms[:157]
     print(*forms, sep=', ')
-    conf = input("Correct? ").lower()
-    if conf != 'y':
-        return None
     verbs = load_verbs()
     if not skip_save and verb not in verbs.index:
         conf = input("No entry for {} in file. Add? ".format(verb)).lower()
@@ -529,13 +523,13 @@ def add_words():
         if word == 'q':
             return None
         cat = ""
-        while cat not in ['invariant', 'nominal', 'verb']:
-            cat = input("Category: ").lower()
-        if cat == 'invariant':
+        while cat not in ['i', 'n', 'v']:
+            cat = input("Category: ").lower()[0]
+        if cat == 'i':
             save_invariant(invariant=word)
-        elif cat == 'nominal':
+        elif cat == 'n':
             save_nominal(nominal=word)
-        elif cat == 'verb':
+        elif cat == 'v':
             save_verb(verb=word)
 
 def add_phrases():

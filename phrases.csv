@@ -2,16 +2,22 @@
 0,minulla on poika,i have a son,2019-02-21 08:25:59.963153,2019-02-23 10:49:59.966177,2 days 02:24:00,True,2,0
 1,veljeni on mielenkiintoinen,my brother is interesting,2019-02-21 08:26:27.488764,2019-02-23 10:50:27.491633,2 days 02:24:00,True,2,0
 2,perheeni on iso,my family is big,2019-02-21 08:25:55.712389,2019-02-23 10:49:55.717834,2 days 02:24:00,True,2,0
-3,hänellä on talo,he has a house,2019-02-21 08:26:10.424425,2019-02-22 08:26:10.425731,1 days 00:00:00,True,1,2
+3,hänellä on talo,he has a house,2019-02-22 14:28:34.685348,2019-02-24 00:04:34.688125,1 days 09:36:00,True,2,2
 4,huoneistoni on täydellinen,my apartment is perfect,2019-02-21 08:26:35.711324,2019-02-23 10:50:35.713958,2 days 02:24:00,True,2,0
-5,äitini on aistikas,my mother is elegant,2019-02-20 15:32:29.858277,2019-02-21 15:32:29.859859,1 days 00:00:00,True,1,1
+5,äitini on aistikas,my mother is elegant,2019-02-22 14:28:20.917250,2019-02-24 00:04:20.920444,1 days 09:36:00,True,2,1
 6,onko sinulla veli?,do you have a brother?,2019-02-21 08:26:16.734927,2019-02-23 10:50:16.737481,2 days 02:24:00,True,2,0
 7,hänellä on auto,she has a car,2019-02-21 08:26:21.785553,2019-02-23 10:50:21.788422,2 days 02:24:00,True,2,0
 8,minulla on isoisä,i have a grandfather,2019-02-21 08:26:05.238955,2019-02-23 10:50:05.241919,2 days 02:24:00,True,2,0
-9,koirani on sievä,my dog is pretty,2019-02-20 15:32:22.153291,2019-02-21 15:32:22.155160,1 days 00:00:00,True,1,1
+9,koirani on sievä,my dog is pretty,2019-02-22 14:28:27.789769,2019-02-24 00:04:27.792654,1 days 09:36:00,True,2,1
 10,tarvitsen mukavaa takkia,i need a comfortable jacket,2019-02-21 13:15:17.848080,2019-02-22 22:51:17.850291,1 days 09:36:00,True,1,0
 11,haluan rannekelloa,i want a watch,2019-02-21 13:15:04.213861,2019-02-22 22:51:04.215936,1 days 09:36:00,True,1,0
 12,lahja vaimolleni,a gift for my wife,2019-02-21 13:15:33.562942,2019-02-22 22:51:33.564919,1 days 09:36:00,True,1,0
 13,rannekello miehelleni,a watch for my husband,2019-02-21 13:15:25.339752,2019-02-22 22:51:25.342126,1 days 09:36:00,True,1,0
 14,haluan ostaa vaatetusta,i want to buy clothes,2019-02-21 13:15:40.897814,2019-02-22 22:51:40.900016,1 days 09:36:00,True,1,0
 15,haluan tätä hattua,i want this hat,2019-02-21 13:15:10.424019,2019-02-22 22:51:10.426298,1 days 09:36:00,True,1,0
+16,kirjoitan paljon,i write a lot,2019-02-22 15:21:40.510139,2019-02-22 15:21:40.510355,1 days 00:00:00,True,0,0
+17,opettaja on täällä,the professor is here,2019-02-22 15:21:59.442179,2019-02-22 15:21:59.442424,1 days 00:00:00,True,0,0
+18,kirjoitatko suomeksi?,do you write in finnish?,2019-02-22 15:22:19.802351,2019-02-22 15:22:19.802665,1 days 00:00:00,True,0,0
+19,luen opettajani kanssa,i read with my teacher,2019-02-22 15:22:36.136188,2019-02-22 15:22:36.136425,1 days 00:00:00,True,0,0
+20,en ole opiskelijaa,i am not a student,2019-02-22 15:22:50.354343,2019-02-22 15:22:50.354832,1 days 00:00:00,True,0,0
+21,tarvitsen kynää,i need a pen,2019-02-22 15:23:00.815835,2019-02-22 15:23:00.816168,1 days 00:00:00,True,0,0
