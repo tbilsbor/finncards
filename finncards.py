@@ -352,6 +352,7 @@ def save_invariant(invariant=None, english=None):
         print("File saved")
         return True
     else:
+        print("No updates made")
         return None
     
 def save_nominal(nominal=None, english=None, forms=None):
@@ -382,6 +383,7 @@ def save_nominal(nominal=None, english=None, forms=None):
         print("File saved")
         return True
     else:
+        print("No updates made")
         return None
     
 def save_verb(verb=None, english=None, forms=None):
@@ -426,6 +428,7 @@ def save_verb(verb=None, english=None, forms=None):
         print("File saved")
         return True
     else:
+        print("No updates made")
         return None
     
 def save_phrase(phrase=None, english=None):
