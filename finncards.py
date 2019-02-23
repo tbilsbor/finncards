@@ -29,6 +29,10 @@ MINIMUM_INTERVAL = pd.to_timedelta('1 days 00:00:00')
 MAXIMUM_INTERVAL = pd.to_timedelta('365 days 00:00:00')
 # Highest interval after getting something wrong
 MAX_AFTER_WRONG = pd.to_timedelta('6 days 00:00:00')
+# 1 out of every n cards is tested further (on form and sentence use)
+FURTHER_TESTING_RATE = 4
+# Anything in this list always does further testing
+FURTHER_TESTING = ['verbs']
 
 # Additional columns for nominals
 NOMINAL_COLUMNS = [
@@ -207,9 +211,10 @@ VERB_FORMS = {
     "First person imperative plural perfect negative": ["Let's not have", 3],
     "Second person imperative plural": ["(You all)", 1],
     "Second person imperative plural negative": ["(You all) don't", 1],
-    "Second person imperative plural perfect": ["(You all) have ___ done", 4],
+    "Second person imperative plural perfect":
+        ["(You all) have ___ done:", 4],
     "Second person imperative plural perfect negative":
-        ["(You all) don't have ___ done", 4],
+        ["(You all) don't have ___ done:", 4],
     "Third person imperative plural": ["They must", 1],
     "Third person imperative plural negative": ["They musn't", 1],
     "Third person imperative plural perfect": ["They must have", 3],
@@ -324,12 +329,43 @@ def load_phrases():
     phrases.sort_index(inplace=True)
     return phrases
 
+def in_file(word=None, words_df=None, category="", english=False):
+    """Checks to see if a word is in a given file"""
+    if word is None:
+        word = input("Word: ").lower()
+    while category not in ['invariant', 'nominal', 'verb']:
+        category = input("Category: ").lower()
+    if words_df is None:
+        if category == 'invariant':
+            words_df = load_invariants()
+        elif category == 'nominal':
+            words_df = load_nominals()
+        elif category == 'verb':
+            words_df = load_verbs()
+    if english:
+        if category == 'verb':
+            return (True if word in list(words_df['English present']) else 
+                    False)
+        else:
+            return True if word in list(words_df['English']) else False
+    else:
+        return True if word in list(words_df.index) else False
+
 def save_invariant(invariant=None, english=None):
     """Save an invariant and at it to the file"""
+    invariants = load_invariants()
     if invariant is None:
         invariant = input("Invariant (Finnish): ")
+        if in_file(word=invariant, words_df=invariants, 
+                   category='invariant'):
+            print("{} already in file".format(invariant))
+            return None
     if english is None:
         english = input("English translation of {}: ".format(invariant))
+        if in_file(word=english, words_df=invariants, 
+                   category='invariant', english=True):
+            print("{} already in file".format(invariant))
+            return None
     last_reviewed = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     next_review = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
     interval = pd.to_timedelta("1 days")
@@ -344,7 +380,6 @@ def save_invariant(invariant=None, english=None):
     columns = INVARIANT_COLUMNS + STATS
     entry = pd.DataFrame(data=[data], columns=columns)
     entry.set_index(keys="Finnish", inplace=True)
-    invariants = load_invariants()
     invariants = invariants.append(entry, verify_integrity=True)
     conf = input("Adding {}. Continue? ".format(invariant)).lower()
     if conf == 'y':
@@ -357,10 +392,19 @@ def save_invariant(invariant=None, english=None):
     
 def save_nominal(nominal=None, english=None, forms=None):
     """Save a nominal and its forms to the file"""
+    nominals = load_nominals()
     if nominal is None:
         nominal = input("Nominal (Finnish): ")
+        if in_file(word=nominal, words_df=nominals, 
+               category='nominal'):
+            print("{} already in file".format(nominal))
+            return None
     if english is None:
         english = input("English translation of {}: ".format(nominal))
+        if in_file(word=english, words_df=nominals, 
+               category='nominal', english=True):
+            print("{} already in file".format(english))
+            return None
     if forms is None:
         forms = retrieve_nominal(nominal, skip_save=True)
     last_reviewed = pd.Timestamp(pd.to_datetime(datetime.datetime.now()))
@@ -375,7 +419,6 @@ def save_nominal(nominal=None, english=None, forms=None):
     columns = NOMINAL_COLUMNS + list(NOMINAL_FORMS.keys()) + STATS
     entry = pd.DataFrame(data=[data], columns=columns)
     entry.set_index(keys="Nominative singular", inplace=True)
-    nominals = load_nominals()
     nominals = nominals.append(entry, verify_integrity=True)
     conf = input("Adding {}. Continue? ".format(nominal)).lower()
     if conf == 'y':
@@ -388,10 +431,19 @@ def save_nominal(nominal=None, english=None, forms=None):
     
 def save_verb(verb=None, english=None, forms=None):
     """Save a verb and its forms to the file"""
+    verbs = load_verbs()
     if verb is None:
         verb = input("Verb (Finnish): ")
+        if in_file(word=verb, words_df=verbs, 
+               category='verb'):
+            print("{} already in file".format(verb))
+            return None
     if english is None:
         e_present = input("English present: ")
+        if in_file(word=e_present, words_df=verbs, 
+               category='verb', english=True):
+            print("{} already in file".format(e_present))
+            return None
         e_simple_past = input("English simple past: ")
         e_past_part = input("English past participle: ")
         e_present_part = input("English present participle: ")
@@ -420,7 +472,6 @@ def save_verb(verb=None, english=None, forms=None):
     columns = VERB_COLUMNS + list(VERB_FORMS.keys()) + STATS
     entry = pd.DataFrame(data=[data], columns=columns)
     entry.set_index(keys="Infinitive", inplace=True)
-    verbs = load_verbs()
     verbs = verbs.append(entry, verify_integrity=True)
     conf = input("Adding {}. Continue? ".format(verb)).lower()
     if conf == 'y':
@@ -523,8 +574,15 @@ def add_words():
     running = True
     while running:
         word = input("Word: ").lower()
-        if word == 'q':
+        if word == '#q':
             return None
+        if word == '#s':
+            if in_file():
+                print("That word is in the file")
+                continue
+            else:
+                print("That word is not in the file")
+                continue
         cat = ""
         while cat not in ['i', 'n', 'v']:
             cat = input("Category: ").lower()[0]
@@ -540,7 +598,7 @@ def add_phrases():
     running = True
     while running:
         phrase = input("Phrase (English): ").lower()
-        if phrase == 'q':
+        if phrase == '#q':
             return None
         save_phrase(english=phrase)
 
@@ -705,6 +763,10 @@ def flash_invariant(word, invariants):
         process_correct(word, invariants, cat='invariant')
     else:
         process_incorrect(word, invariants, cat='invariant')
+    # 1 in 4 chance to contintue with form testing
+    if ('invariants' not in FURTHER_TESTING and 
+        random.randint(1, FURTHER_TESTING_RATE) > 1):
+        return True
     answer = input("Use in a sentence:\n")
     if answer == 'q':
         return False
@@ -722,6 +784,10 @@ def flash_nominal(word, nominals):
         process_correct(word, nominals, cat='nominal')
     else:
         process_incorrect(word, nominals, cat='nominal')
+    # 1 in 4 chance to contintue with form testing
+    if ('nominals' not in FURTHER_TESTING and
+        random.randint(1, FURTHER_TESTING_RATE) > 1):
+        return True
     form_name = random.choice(list(NOMINAL_FORMS.keys()))
     form_value = nominals.loc[word, form_name]
     answer = input("{}: ".format(form_name)).lower()
@@ -762,6 +828,10 @@ def flash_verb(word, verbs):
         process_correct(word, verbs, cat='verb')
     else:
         process_incorrect(word, verbs, cat='verb')
+    # 1 in 4 chance to contintue with form testing
+    if ('verbs' not in FURTHER_TESTING and
+        random.randint(1, FURTHER_TESTING_RATE) > 1):
+        return True
     form_choices = [form for form in VERB_FORMS.keys() if 
                     VERB_FORMS[form] != "[skip]"]
     form_name = random.choice(form_choices)
@@ -799,6 +869,9 @@ def flash_verb(word, verbs):
         english_verb_phrase = "{} - \"{} {}\"".format(form_name,
                                VERB_FORMS[form_name][0],
                                verbs.loc[word, 'English present participle'])
+    else:
+        print("{} does not have a proper verb form assignment!")
+        return False
     answer = input("{}: ".format(english_verb_phrase)).lower()
     if answer == 'q':
         return False
