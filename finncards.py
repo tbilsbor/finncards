@@ -135,7 +135,7 @@ VERB_FORMS = {
     "Third person plural perfect": ["They have", 3],
     "Third person plural perfect negative": ["They haven't", 3],
     "Passive": ["One /  One is", 0],
-    "Passive negative": ["One isn't / One doesn't", 0],
+    "Passive negative": ["One doesn't / One isn't", 0],
     "Passive perfect": ["One has", 3],
     "Passive perfect negative": ["One hasn't", 3],
     "First person past": ["I", 2],
@@ -704,6 +704,7 @@ def process_correct(word, words_df, cat):
     words_df.loc[word, 'Next review'] = (
             pd.to_datetime(datetime.datetime.now() + 
                            pd.to_timedelta(words_df.loc[word, 'Interval'])))
+    print("Next review: {}".format(words_df.loc[word, 'Next review']))
     words_df.loc[word, 'Correct?'] = True
     words_df.loc[word, 'Times correct'] += 1
     if cat == 'invariant':
@@ -753,10 +754,11 @@ def process_incorrect(word, words_df, cat):
         
 def flash_invariant(word, invariants):
     """Do an invariant flashcard"""
-    english = invariants.loc[word, 'English']
+    english_list = invariants.loc[word, 'English'].split(', ')
+    english = random.choice(english_list)
     print(english)
     answer = input("Soumeksi: ").lower()
-    if answer == 'q':
+    if answer == '#q':
         return False
     correct = True if answer == word else False
     if correct:
@@ -764,41 +766,44 @@ def flash_invariant(word, invariants):
     else:
         process_incorrect(word, invariants, cat='invariant')
     # 1 in 4 chance to contintue with form testing
-    if ('invariants' not in FURTHER_TESTING and 
+    if (correct and
+        'invariants' not in FURTHER_TESTING and 
         random.randint(1, FURTHER_TESTING_RATE) > 1):
         return True
     answer = input("Use in a sentence:\n")
-    if answer == 'q':
+    if answer == '#q':
         return False
     return True
 
 def flash_nominal(word, nominals):
     """Do a nominal flashcard"""
-    english = nominals.loc[word, 'English']
+    english_list = nominals.loc[word, 'English'].split(', ')
+    english = random.choice(english_list)
     print(english)
     answer = input("Suomeksi: ").lower()
-    if answer == 'q':
+    if answer == '#q':
         return False
     correct = True if answer == word else False
     if correct:
         process_correct(word, nominals, cat='nominal')
     else:
         process_incorrect(word, nominals, cat='nominal')
-    # 1 in 4 chance to contintue with form testing
-    if ('nominals' not in FURTHER_TESTING and
+    # 1 in 4 chance to contintue with form testing unless incorrect
+    if (correct and
+        'nominals' not in FURTHER_TESTING and
         random.randint(1, FURTHER_TESTING_RATE) > 1):
         return True
     form_name = random.choice(list(NOMINAL_FORMS.keys()))
     form_value = nominals.loc[word, form_name]
     answer = input("{}: ".format(form_name)).lower()
-    if answer == 'q':
+    if answer == '#q':
         return False
     if answer == form_value:
         print("Correct")
     else:
         print("Incorrect. {} of {} is {}".format(form_name, word, form_value))
     answer = input("Use in a sentence:\n")
-    if answer == 'q':
+    if answer == '#q':
         return False
     return True
 
@@ -816,25 +821,29 @@ def tps_conjugation(english):
     english += 's'
     return english
         
-def flash_verb(word, verbs):
+def flash_verb(word, verbs, form_only=False):
     """Do a verb flashcard"""
-    english = verbs.loc[word, 'English present']
-    print("To {}".format(english))
-    answer = input("Soumeksi: ").lower()
-    if answer == 'q':
-        return False
-    correct = True if answer == word else False
-    if correct:
-        process_correct(word, verbs, cat='verb')
-    else:
-        process_incorrect(word, verbs, cat='verb')
-    # 1 in 4 chance to contintue with form testing
-    if ('verbs' not in FURTHER_TESTING and
-        random.randint(1, FURTHER_TESTING_RATE) > 1):
-        return True
+    if not form_only:
+        english = verbs.loc[word, 'English present']
+        print("To {}".format(english))
+        answer = input("Soumeksi: ").lower()
+        if answer == 'q':
+            return False
+        correct = True if answer == word else False
+        if correct:
+            process_correct(word, verbs, cat='verb')
+        else:
+            process_incorrect(word, verbs, cat='verb')
+        # 1 in 4 chance to contintue with form testing
+        if (correct and
+            'verbs' not in FURTHER_TESTING and
+            random.randint(1, FURTHER_TESTING_RATE) > 1):
+            return True
     form_choices = [form for form in VERB_FORMS.keys() if 
                     VERB_FORMS[form] != "[skip]"]
     form_name = random.choice(form_choices)
+    while VERB_FORMS[form_name][0] == '[skip]':
+        form_name = random.choice(form_choices)
     form_value = verbs.loc[word, form_name]
     # English form key:
     # 0: Simple present / present participle
@@ -844,15 +853,25 @@ def flash_verb(word, verbs):
     # 4: Present participle only
     if VERB_FORMS[form_name][1] == 0:
         verb_phrase_subjects = VERB_FORMS[form_name][0].split(" / ")
-        if form_name == 'Third person':
+        if form_name == 'Third person' or form_name == 'Passive':
             conjugation = tps_conjugation(verbs.loc[word, 'English present'])
         else:
             conjugation = verbs.loc[word, 'English present']
-        english_verb_phrase = "{} - \"{} {} / {} {}\"".format(form_name,
-                               verb_phrase_subjects[0],
-                               conjugation,
-                               verb_phrase_subjects[1],
-                               verbs.loc[word, 'English present participle'])
+        if len(verb_phrase_subjects) == 2:
+            english_verb_phrase = "{} - \"{} {} / {} {}\"".format(form_name,
+                                   verb_phrase_subjects[0],
+                                   conjugation,
+                                   verb_phrase_subjects[1],
+                                   verbs.loc[word,
+                                             'English present participle'])
+        elif len(verb_phrase_subjects) == 1:
+            english_verb_phrase = "{} - \"{} {}\"".format(form_name,
+                                   verb_phrase_subjects[0],
+                                   conjugation)
+        else:
+            print("{} has an improper English verb structure!"
+                  .format(form_name))
+            return False
     elif VERB_FORMS[form_name][1] == 1:
         english_verb_phrase = "{} - \"{} {}\"".format(form_name,
                                VERB_FORMS[form_name][0],
@@ -870,19 +889,21 @@ def flash_verb(word, verbs):
                                VERB_FORMS[form_name][0],
                                verbs.loc[word, 'English present participle'])
     else:
-        print("{} does not have a proper verb form assignment!")
+        print("{} does not have a proper verb form assignment!"
+              .format(form_name))
         return False
     answer = input("{}: ".format(english_verb_phrase)).lower()
-    if answer == 'q':
+    if answer == '#q':
         return False
     if answer == form_value:
         print("Correct")
     else:
         print("Incorect. {} of {} is {}".format(form_name, word,
               form_value))
-    answer = input("Use in a sentence:\n")
-    if answer == 'q':
-        return False
+    if not form_only:
+        answer = input("Use in a sentence:\n")
+        if answer == '#q':
+            return False
     return True
 
 def flash_phrase(phrase_i, phrases):
@@ -890,7 +911,7 @@ def flash_phrase(phrase_i, phrases):
     english = phrases.loc[phrase_i, 'English']
     print(english)
     answer = input("Soumeksi: ").lower()
-    if answer == 'q':
+    if answer == '#q':
         return False
     if answer == phrases.loc[phrase_i, 'Finnish']:
         process_correct(phrase_i, phrases, cat='phrase')
@@ -901,21 +922,30 @@ def flash_phrase(phrase_i, phrases):
 def flashcards():
     """The core flashcards function"""
     words, invariants, nominals, verbs = generate_words_list()
-    print("{} words due".format(len(words)))
-    random.shuffle(words)
-    for word in words:
-        if word[1] == 'invariant':
-            if not flash_invariant(word[0], invariants):
-                print("Quitting")
-                return None
-        elif word[1] == 'nominal':
-            if not flash_nominal(word[0], nominals):
-                print("Quitting")
-                return None
-        elif word[1] == 'verb':
-            if not flash_verb(word[0], verbs):
-                print("Quitting")
-                return None
+    while True:
+        print("{} words due".format(len(words)))
+        random.shuffle(words)
+        for word in words:
+            if word[1] == 'invariant':
+                if not flash_invariant(word[0], invariants):
+                    print("Quitting")
+                    return None
+            elif word[1] == 'nominal':
+                if not flash_nominal(word[0], nominals):
+                    print("Quitting")
+                    return None
+            elif word[1] == 'verb':
+                if not flash_verb(word[0], verbs):
+                    print("Quitting")
+                    return None
+        words, invariants, nominals, verbs = generate_words_list()
+        # Keep going if there are still wrong words
+        correct_list = (invariants['Correct?'] + nominals['Correct?'] +
+                        verbs['Correct?'])
+        if not all(correct_list):
+            continue
+        else:
+            break
     print("No more flashcards")
     
 def phrasecards():
@@ -928,3 +958,19 @@ def phrasecards():
             print("Quitting")
             return None
     print("No more flashcards")
+
+def verb_forms_quiz(verb=None):
+    """A quiz on verb forms using a single verb"""
+    verbs = load_verbs()
+    if verb is None:
+        verb = input('Verb (#r for random): ').lower()
+        if verb == '#r':
+            verb = random.choice(list(verbs.index))
+            print(verb)
+    if verb not in list(verbs.index):
+        add = input("Verb not in file. Add? ").lower()
+        if add == 'y':
+            save_verb(verb=verb)
+            verbs = load_verbs()
+    while flash_verb(verb, verbs, form_only=True):
+        continue
