@@ -770,9 +770,6 @@ def flash_invariant(word, invariants):
         'invariants' not in FURTHER_TESTING and 
         random.randint(1, FURTHER_TESTING_RATE) > 1):
         return True
-    answer = input("Use in a sentence:\n")
-    if answer == '#q':
-        return False
     return True
 
 def flash_nominal(word, nominals):
@@ -802,9 +799,6 @@ def flash_nominal(word, nominals):
         print("Correct")
     else:
         print("Incorrect. {} of {} is {}".format(form_name, word, form_value))
-    answer = input("Use in a sentence:\n")
-    if answer == '#q':
-        return False
     return True
 
 def tps_conjugation(english):
@@ -900,10 +894,6 @@ def flash_verb(word, verbs, form_only=False):
     else:
         print("Incorect. {} of {} is {}".format(form_name, word,
               form_value))
-    if not form_only:
-        answer = input("Use in a sentence:\n")
-        if answer == '#q':
-            return False
     return True
 
 def flash_phrase(phrase_i, phrases):

@@ -1,27 +1,27 @@
 ,Finnish,English,Last reviewed,Next review,Interval,Correct?,Times correct,Times incorrect
-0,minulla on poika,i have a son,2019-02-23 11:20:00.727847,2019-02-26 09:53:36.731205,2 days 22:33:35.999999,True,3,0
-1,veljeni on mielenkiintoinen,my brother is interesting,2019-02-23 11:20:06.577803,2019-02-26 09:53:42.579926,2 days 22:33:35.999999,True,3,0
+0,minulla on poika,i have a son,2019-02-26 14:40:08.816738,2019-03-02 17:27:11.219426,4 days 02:47:02.399998,True,4,0
+1,veljeni on mielenkiintoinen,my brother is interesting,2019-02-26 14:42:13.874112,2019-03-02 17:29:16.277209,4 days 02:47:02.399998,True,4,0
 2,perheeni on iso,my family is big,2019-02-25 13:26:43.630559,2019-02-27 00:43:31.633547,1 days 11:16:47.999999,True,4,1
-3,hänellä on talo,he has a house,2019-02-24 08:58:59.035726,2019-02-26 08:01:23.038712,1 days 23:02:24,True,3,2
-4,huoneistoni on täydellinen,my apartment is perfect,2019-02-25 13:26:18.793287,2019-02-24 14:25:04.226928,1 days 00:00:00,False,3,3
-5,äitini on aistikas,my mother is elegant,2019-02-24 08:59:28.991038,2019-02-26 08:01:52.994062,1 days 23:02:24,True,3,1
-6,onko sinulla veli?,do you have a brother?,2019-02-23 11:19:36.892376,2019-02-26 09:53:12.894865,2 days 22:33:35.999999,True,3,0
-7,hänellä on auto,she has a car,2019-02-23 11:20:55.970402,2019-02-26 09:54:31.973025,2 days 22:33:35.999999,True,3,0
-8,minulla on isoisä,i have a grandfather,2019-02-23 11:19:41.301956,2019-02-26 09:53:17.304358,2 days 22:33:35.999999,True,3,0
-9,koirani on sievä,my dog is pretty,2019-02-24 08:58:27.089760,2019-02-26 08:00:51.093192,1 days 23:02:24,True,3,1
+3,hänellä on talo,he has a house,2019-02-26 14:42:29.285829,2019-03-01 08:33:50.888981,2 days 17:51:21.600000,True,4,2
+4,huoneistoni on täydellinen,my apartment is perfect,2019-02-26 14:39:54.418056,2019-02-27 14:39:54.419589,1 days 00:00:00,True,4,3
+5,äitini on aistikas,my mother is elegant,2019-02-26 14:43:21.515344,2019-03-01 08:34:43.118354,2 days 17:51:21.600000,True,4,1
+6,onko sinulla veli?,do you have a brother?,2019-02-26 14:44:04.995128,2019-02-26 09:53:12.894865,1 days 11:16:47.999999,False,3,1
+7,hänellä on auto,she has a car,2019-02-26 14:40:05.813447,2019-03-02 17:27:08.215913,4 days 02:47:02.399998,True,4,0
+8,minulla on isoisä,i have a grandfather,2019-02-26 14:42:18.092560,2019-03-02 17:29:20.495599,4 days 02:47:02.399998,True,4,0
+9,koirani on sievä,my dog is pretty,2019-02-26 14:40:30.943968,2019-03-01 08:31:52.546608,2 days 17:51:21.600000,True,4,1
 10,tarvitsen mukavaa takkia,i need a comfortable jacket,2019-02-25 13:26:35.542541,2019-02-28 07:17:57.145572,2 days 17:51:21.600000,True,3,0
 11,haluan rannekelloa,i want a watch,2019-02-25 13:25:44.732344,2019-02-28 07:17:06.334706,2 days 17:51:21.600000,True,3,0
 12,lahja vaimolleni,a gift for my wife,2019-02-25 13:25:17.442921,2019-02-26 23:01:17.445492,1 days 09:36:00,True,3,2
-13,rannekello miehelleni,a watch for my husband,2019-02-25 13:25:10.423481,2019-02-25 10:22:53.369873,1 days 00:00:00,False,2,1
-14,haluan ostaa vaatetusta,i want to buy clothes,2019-02-25 13:25:03.528280,2019-02-24 22:55:56.657906,1 days 00:00:00,False,2,5
+13,rannekello miehelleni,a watch for my husband,2019-02-26 14:41:34.693095,2019-02-27 14:41:34.694634,1 days 00:00:00,True,3,1
+14,haluan ostaa vaatetusta,i want to buy clothes,2019-02-26 14:42:24.515201,2019-02-27 14:42:24.516393,1 days 00:00:00,True,3,5
 15,haluan tätä hattua,i want this hat,2019-02-25 13:24:29.815683,2019-02-28 07:15:51.418602,2 days 17:51:21.600000,True,3,0
-16,kirjoitan paljon,i write a lot,2019-02-24 08:59:14.288464,2019-02-26 08:01:38.291074,1 days 23:02:24,True,2,0
-17,opettaja on täällä,the professor is here,2019-02-24 08:59:06.391770,2019-02-26 08:01:30.394736,1 days 23:02:24,True,2,0
-18,kirjoitatko suomeksi?,do you write in finnish?,2019-02-25 13:26:05.869937,2019-02-26 13:26:05.871801,1 days 00:00:00,True,2,1
-19,luen opettajani kanssa,i read with my teacher,2019-02-24 08:59:21.329561,2019-02-26 08:01:45.331883,1 days 23:02:24,True,2,0
-20,en ole opiskelijaa,i am not a student,2019-02-24 08:59:10.903353,2019-02-26 08:01:34.905837,1 days 23:02:24,True,2,0
-21,tarvitsen kynää,i need a pen,2019-02-24 08:58:45.368421,2019-02-26 08:01:09.371403,1 days 23:02:24,True,2,0
-22,tyttö on amerikkalainen,the girl is american,2019-02-25 13:24:20.445421,2019-02-25 00:01:31.516999,1 days 00:00:00,False,1,1
+16,kirjoitan paljon,i write a lot,2019-02-26 14:43:52.574529,2019-03-01 08:35:14.177337,2 days 17:51:21.600000,True,3,0
+17,opettaja on täällä,the professor is here,2019-02-26 14:41:00.281349,2019-03-01 08:32:21.884402,2 days 17:51:21.600000,True,3,0
+18,kirjoitatko suomeksi?,do you write in finnish?,2019-02-26 14:40:42.293877,2019-02-28 00:16:42.297015,1 days 09:36:00,True,3,1
+19,luen opettajani kanssa,i read with my teacher,2019-02-26 14:40:00.953389,2019-03-01 08:31:22.556050,2 days 17:51:21.600000,True,3,0
+20,en ole opiskelijaa,i am not a student,2019-02-26 14:41:04.747451,2019-03-01 08:32:26.350444,2 days 17:51:21.600000,True,3,0
+21,tarvitsen kynää,i need a pen,2019-02-26 14:40:14.508858,2019-03-01 08:31:36.111535,2 days 17:51:21.600000,True,3,0
+22,tyttö on amerikkalainen,the girl is american,2019-02-26 14:43:40.110327,2019-02-27 14:43:40.111514,1 days 00:00:00,True,2,1
 23,mistä sinä olet?,where are you from?,2019-02-25 13:25:09.692601,2019-02-27 12:27:33.695703,1 days 23:02:24,True,2,0
 24,syön omenia,i eat apples,2019-02-25 13:27:05.509235,2019-02-27 12:29:29.512176,1 days 23:02:24,True,2,0
 25,juotko vettä?,do you drink water?,2019-02-25 13:27:41.550439,2019-02-27 12:30:05.553375,1 days 23:02:24,True,2,0
@@ -32,24 +32,24 @@
 30,tarvitsen puhelinta,i need a telephone,2019-02-25 13:26:00.604236,2019-02-27 12:28:24.607458,1 days 23:02:24,True,2,0
 31,passini on hotellissa,my passport is in the hotel,2019-02-25 13:26:58.692881,2019-02-27 12:29:22.695921,1 days 23:02:24,True,2,0
 32,tarvitsen maksaa,i need to pay,2019-02-25 13:26:40.300836,2019-02-27 12:29:04.303956,1 days 23:02:24,True,2,0
-33,haluan maksaa laskun,i want to pay the check,2019-02-25 13:26:23.303997,2019-02-25 08:58:39.756565,1 days 00:00:00,False,1,3
-34,hänellä on kissa,she has a cat,2019-02-25 13:25:51.762724,2019-02-25 08:31:50.573230,1 days 00:00:00,False,1,1
+33,haluan maksaa laskun,i want to pay the check,2019-02-26 14:41:10.259798,2019-02-27 14:41:10.262004,1 days 00:00:00,True,2,3
+34,hänellä on kissa,she has a cat,2019-02-26 14:41:25.536029,2019-02-27 14:41:25.538112,1 days 00:00:00,True,2,1
 35,hän on aika kiireinen,she is quite busy,2019-02-25 13:26:10.941479,2019-02-26 23:02:10.944437,1 days 09:36:00,True,1,0
 36,mitä nimesi on?,what is your name,2019-02-25 13:24:11.188314,2019-02-26 23:00:11.191141,1 days 09:36:00,True,1,0
-37,"anteeksi, en ole tervettä","i'm sorry, i'm unwell",2019-02-25 13:24:38.465848,2019-02-24 11:35:13.592916,1 days 00:00:00,False,0,1
-38,haluatko vettä?,do you want water?,2019-02-25 13:25:39.973862,2019-02-24 11:35:25.842708,1 days 00:00:00,False,0,1
+37,"anteeksi, en ole tervettä","i'm sorry, i'm unwell",2019-02-26 14:41:58.587182,2019-02-27 14:41:58.589478,1 days 00:00:00,True,1,1
+38,haluatko vettä?,do you want water?,2019-02-26 14:40:26.310298,2019-02-27 14:40:26.312044,1 days 00:00:00,True,1,1
 39,käytätkö autoa?,are you using the car?,2019-02-25 13:27:25.408388,2019-02-26 23:03:25.411497,1 days 09:36:00,True,1,0
 40,"ei, hän ei käytä tietokonetta","no, she does not use the computer",2019-02-25 13:25:32.549633,2019-02-26 23:01:32.552061,1 days 09:36:00,True,1,0
-41,sinulla ei ole rahaa,you don't have the money,2019-02-25 13:26:51.605813,2019-02-24 11:38:41.072595,1 days 00:00:00,False,0,1
-42,million olet kiireinen?,when are you busy?,2019-02-25 13:24:55.631999,2019-02-24 11:39:04.515045,1 days 00:00:00,False,0,1
+41,sinulla ei ole rahaa,you don't have the money,2019-02-26 14:43:49.289414,2019-02-27 14:43:49.290595,1 days 00:00:00,True,1,1
+42,million olet kiireinen?,when are you busy?,2019-02-26 14:40:52.621702,2019-02-27 14:40:52.624155,1 days 00:00:00,True,1,1
 43,juhlat eivät ole lauantaina,the party is not on saturday,2019-02-25 13:27:13.709596,2019-02-26 23:03:13.712601,1 days 09:36:00,True,1,0
-44,haluan puhua suomenkieltä,i want to speak finnish,2019-02-25 16:11:02.983897,2019-02-25 16:11:02.984112,1 days 00:00:00,True,0,0
-45,missä opiskelet?,where do you study,2019-02-25 16:11:29.182904,2019-02-25 16:11:29.183126,1 days 00:00:00,True,0,0
-46,haluan syödä enemmän leipää,i want to eat more bread,2019-02-25 16:11:42.950460,2019-02-25 16:11:42.950748,1 days 00:00:00,True,0,0
-47,tyttö haluaa juoda vettä,the girl wants to drink water,2019-02-25 16:11:59.485439,2019-02-25 16:11:59.485870,1 days 00:00:00,True,0,0
-48,et asu suomessa,you don't live in finland,2019-02-25 16:12:15.008654,2019-02-25 16:12:15.009026,1 days 00:00:00,True,0,0
-49,nainen asuu talossa,the woman lives in a house,2019-02-25 16:12:32.038926,2019-02-25 16:12:32.039356,1 days 00:00:00,True,0,0
-50,olen töissä ravintolassa,i work in a restaurant,2019-02-25 16:12:49.025292,2019-02-25 16:12:49.025869,1 days 00:00:00,True,0,0
-51,haluan olla ranskaksi opettajaksi,i want to be a french teacher,2019-02-25 16:13:48.867572,2019-02-25 16:13:48.867802,1 days 00:00:00,True,0,0
-52,hän on ystäväni,he is my friend,2019-02-25 16:14:03.083832,2019-02-25 16:14:03.084232,1 days 00:00:00,True,0,0
-53,veljeni on töissä toimistossa,my brother works in an office,2019-02-25 16:14:23.499975,2019-02-25 16:14:23.500277,1 days 00:00:00,True,0,0
+44,haluan puhua suomenkieltä,i want to speak finnish,2019-02-26 14:42:37.991966,2019-02-28 00:18:37.995090,1 days 09:36:00,True,1,0
+45,missä opiskelet?,where do you study,2019-02-26 14:40:36.883219,2019-02-28 00:16:36.886164,1 days 09:36:00,True,1,0
+46,haluan syödä enemmän leipää,i want to eat more bread,2019-02-26 14:43:32.831975,2019-02-28 00:19:32.834374,1 days 09:36:00,True,1,0
+47,tyttö haluaa juoda vettä,the girl wants to drink water,2019-02-26 14:41:45.750692,2019-02-25 16:11:59.485870,1 days 00:00:00,False,0,1
+48,et asu suomessa,you don't live in finland,2019-02-26 14:41:18.399429,2019-02-25 16:12:15.009026,1 days 00:00:00,False,0,1
+49,nainen asuu talossa,the woman lives in a house,2019-02-26 14:43:14.158503,2019-02-28 00:19:14.161511,1 days 09:36:00,True,1,0
+50,olen töissä ravintolassa,i work in a restaurant,2019-02-26 14:42:48.296383,2019-02-28 00:18:48.299198,1 days 09:36:00,True,1,0
+51,haluan olla ranskaksi opettajaksi,i want to be a french teacher,2019-02-26 14:43:02.616844,2019-02-25 16:13:48.867802,1 days 00:00:00,False,0,1
+52,hän on ystäväni,he is my friend,2019-02-26 14:40:21.529081,2019-02-28 00:16:21.531700,1 days 09:36:00,True,1,0
+53,veljeni on töissä toimistossa,my brother works in an office,2019-02-26 14:42:08.564631,2019-02-28 00:18:08.567592,1 days 09:36:00,True,1,0
