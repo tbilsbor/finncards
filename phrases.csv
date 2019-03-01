@@ -22,7 +22,7 @@
 20,en ole opiskelijaa,i am not a student,2019-02-26 14:41:04.747451,2019-03-01 08:32:26.350444,2 days 17:51:21.600000,True,3,0
 21,tarvitsen kynää,i need a pen,2019-02-26 14:40:14.508858,2019-03-01 08:31:36.111535,2 days 17:51:21.600000,True,3,0
 22,tyttö on amerikkalainen,the girl is american,2019-02-26 14:43:40.110327,2019-02-27 14:43:40.111514,1 days 00:00:00,True,2,1
-23,mistä sinä olet?,where are you from?,2019-02-25 13:25:09.692601,2019-02-27 12:27:33.695703,1 days 23:02:24,True,2,0
+23,mistä sinä olet?,where are you from?,2019-02-27 21:11:02.114238,2019-02-27 12:27:33.695703,1 days 00:00:00,False,2,1
 24,syön omenia,i eat apples,2019-02-25 13:27:05.509235,2019-02-27 12:29:29.512176,1 days 23:02:24,True,2,0
 25,juotko vettä?,do you drink water?,2019-02-25 13:27:41.550439,2019-02-27 12:30:05.553375,1 days 23:02:24,True,2,0
 26,puhun englantia,i speak english,2019-02-25 13:24:14.540235,2019-02-27 12:26:38.542960,1 days 23:02:24,True,2,0
@@ -31,7 +31,7 @@
 29,minulla on matkalaukku,i have a suitcase,2019-02-25 13:27:30.403213,2019-02-27 12:29:54.406769,1 days 23:02:24,True,2,0
 30,tarvitsen puhelinta,i need a telephone,2019-02-25 13:26:00.604236,2019-02-27 12:28:24.607458,1 days 23:02:24,True,2,0
 31,passini on hotellissa,my passport is in the hotel,2019-02-25 13:26:58.692881,2019-02-27 12:29:22.695921,1 days 23:02:24,True,2,0
-32,tarvitsen maksaa,i need to pay,2019-02-25 13:26:40.300836,2019-02-27 12:29:04.303956,1 days 23:02:24,True,2,0
+32,tarvitsen maksaa,i need to pay,2019-02-27 21:11:01.002357,2019-02-27 12:29:04.303956,1 days 00:00:00,False,2,1
 33,haluan maksaa laskun,i want to pay the check,2019-02-26 14:41:10.259798,2019-02-27 14:41:10.262004,1 days 00:00:00,True,2,3
 34,hänellä on kissa,she has a cat,2019-02-26 14:41:25.536029,2019-02-27 14:41:25.538112,1 days 00:00:00,True,2,1
 35,hän on aika kiireinen,she is quite busy,2019-02-25 13:26:10.941479,2019-02-26 23:02:10.944437,1 days 09:36:00,True,1,0
@@ -53,3 +53,6 @@
 51,haluan olla ranskaksi opettajaksi,i want to be a french teacher,2019-02-26 14:43:02.616844,2019-02-25 16:13:48.867802,1 days 00:00:00,False,0,1
 52,hän on ystäväni,he is my friend,2019-02-26 14:40:21.529081,2019-02-28 00:16:21.531700,1 days 09:36:00,True,1,0
 53,veljeni on töissä toimistossa,my brother works in an office,2019-02-26 14:42:08.564631,2019-02-28 00:18:08.567592,1 days 09:36:00,True,1,0
+54,tarvitseeko poikasi rahaa?,does your son need money,2019-02-27 21:11:38.064630,2019-02-27 21:11:38.064943,1 days 00:00:00,True,0,0
+55,onko isälläsi pieniä autoa?,does your father have a small car?,2019-02-27 21:12:27.311275,2019-02-27 21:12:27.311537,1 days 00:00:00,True,0,0
+56,hän puhuu sihteerien kanssa,he is speaking with the secretaries,2019-02-27 21:13:15.658028,2019-02-27 21:13:15.658485,1 days 00:00:00,True,0,0
